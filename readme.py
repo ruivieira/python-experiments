@@ -25,6 +25,8 @@ projects = "\n".join([f"* `{p.filename}`, {p.description}" for p in projects])
 template=f"""
 # python-experiments
 
+![](docs/snake.png)
+
 A place for Python experiments.
 
 {projects}
