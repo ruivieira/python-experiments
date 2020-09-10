@@ -17,6 +17,8 @@ for path in Path('.').rglob('*.py'):
         info = Info(filename=path.name, description=descriptions[0][8:])
         projects.append(info)
 
+# sort the projects by description size
+projects = sorted(projects, key=lambda project: len(project.filename + project.description))
 
 projects = "\n".join([f"* `{p.filename}`, {p.description}" for p in projects])
 
