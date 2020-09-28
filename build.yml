@@ -1,0 +1,12 @@
+image: fedora/32
+packages:
+  - python
+  - python-pip
+sources:
+  - https://git.sr.ht/~ruivieira/python-experiments
+tasks:
+  - setup: |
+      cd python-experiments
+      pip install -r requirements-test.txt
+  - lint: |
+      pylint *.py bear/*.py wax/*.py
