@@ -1,20 +1,23 @@
+"""Bear database handling methods"""
 import sqlite3
 from pathlib import Path
 from typing import List
 import re
-import argparse
 from collections import Counter
 
 HOME = str(Path.home())
 
 
 def get_connection():
+    """Return a connection"""
     return sqlite3.connect(
-        f"{HOME}/Library/Group Containers/9K33E3U3T4.net.shinyfrog.bear/Application Data/database.sqlite"
+        f"{HOME}/Library/Group Containers/" +
+        "9K33E3U3T4.net.shinyfrog.bear/Application Data/database.sqlite"
     )
 
 
 def get_titles(conn) -> List[str]:
+    """Get all titles"""
     cur = conn.cursor()
     cur.execute("SELECT ZTITLE FROM ZSFNOTE")
 
@@ -22,6 +25,7 @@ def get_titles(conn) -> List[str]:
     return [row[0] for row in rows]
 
 def get_all_notes_text(conn) -> List[str]:
+    """Get all notes' text"""
     cur = conn.cursor()
     cur.execute("SELECT ZTEXT FROM ZSFNOTE")
 
@@ -29,6 +33,7 @@ def get_all_notes_text(conn) -> List[str]:
     return [row[0] for row in rows]
 
 def get_all_tasks(conn) -> List[str]:
+    """Get all tasks"""
     cur = conn.cursor()
     cur.execute("SELECT ZTITLE, ZTEXT FROM ZSFNOTE")
 
@@ -44,10 +49,11 @@ def get_all_tasks(conn) -> List[str]:
     return "meh"
 
 def get_duplicate_titles(conn):
+    """Get all duplicate titles"""
     cur = conn.cursor()
     cur.execute("SELECT ZTITLE FROM ZSFNOTE")
 
-    rows = cur.fetchall()    
+    rows = cur.fetchall()
     counts = Counter([row[0] for row in rows])
     counts = counts.items()
     total = 0

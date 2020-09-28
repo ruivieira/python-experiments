@@ -1,3 +1,5 @@
+# pylint: skip-file
+"""Methods to sync a bear database with a markdown directory"""
 import sqlite3
 import datetime
 import re
@@ -8,15 +10,18 @@ import time
 import shutil
 import fnmatch
 import json
-import coloredlogs, logging
+import coloredlogs
+import logging
 
 # Create a logger object.
 logger = logging.getLogger("bear")
 coloredlogs.install(level='DEBUG')
 
 class BearSync:
+    """Class to sync a bear db with a folder"""
     def __init__(self):
-        self.make_tag_folders = True  # Exports to folders using first tag only, if `multi_tag_folders = False`
+        # Exports to folders using first tag only, if `multi_tag_folders = False`
+        self.make_tag_folders = True
         self.multi_tag_folders = False  # Copies notes to all 'tag-paths' found in note!
         # Only active if `make_tag_folders = True`
         self.hide_tags_in_comment_block = (
@@ -52,12 +57,12 @@ class BearSync:
         # NOTE! Your user 'HOME' path and '/BearNotes' is added below!
         # NOTE! So do not change anything below here!!!
 
-        self.HOME = os.getenv("HOME", "")
+        self.home = os.getenv("HOME", "")
 
         self.set_logging_on = True
 
         # NOTE! if 'BearNotes' is left blank, all other files in my_sync_service will be deleted!!
-        self.export_path = os.path.join(self.HOME, "BearNotes")
+        self.export_path = os.path.join(self.home, "BearNotes")
         # NOTE! "export_path" is used for sync-back to Bear, so don't change this variable name!
         self.multi_export = [(self.export_path, True)]  # only one folder output here.
         # Use if you want export to severa places like: Dropbox and OneDrive, etc. See below
@@ -70,23 +75,25 @@ class BearSync:
         # multi_export = [(export_path, True), (export_path_aux1, False), (export_path_aux2, True)]
 
         self.temp_path = os.path.join(
-            self.HOME, "Temp", "BearExportTemp"
+            self.home, "Temp", "BearExportTemp"
         )  # NOTE! Do not change the "BearExportTemp" folder name!!!
         self.bear_db = os.path.join(
-            self.HOME,
-            "Library/Group Containers/9K33E3U3T4.net.shinyfrog.bear/Application Data/database.sqlite",
+            self.home,
+            "Library/Group Containers/9K33E3U3T4.net.shinyfrog.bear" +
+            "/Application Data/database.sqlite",
         )
         self.sync_backup = os.path.join(
-            self.HOME, "BearSyncBackup"
+            self.home, "BearSyncBackup"
         )  # Backup of original note before sync to Bear.
         self.log_file = os.path.join(self.sync_backup, "bear_export_sync_log.txt")
 
         # Paths used in image exports:
         self.bear_image_path = os.path.join(
-            self.HOME,
-            "Library/Group Containers/9K33E3U3T4.net.shinyfrog.bear/Application Data/Local Files/Note Images",
+            self.home,
+            "Library/Group Containers/9K33E3U3T4.net.shinyfrog.bear/"+
+            "Application Data/Local Files/Note Images",
         )
-        self.assets_path = os.path.join(self.HOME, self.export_path, "BearImages")
+        self.assets_path = os.path.join(self.home, self.export_path, "BearImages")
 
         self.sync_ts = ".sync-time.log"
         self.export_ts = ".export-time.log"
@@ -96,12 +103,13 @@ class BearSync:
         self.export_ts_file_exp = os.path.join(self.export_path, self.export_ts)
         self.export_ts_file = os.path.join(self.temp_path, self.export_ts)
 
-        self.gettag_sh = os.path.join(self.HOME, "temp/gettag.sh")
-        self.gettag_txt = os.path.join(self.HOME, "temp/gettag.txt")
+        self.gettag_sh = os.path.join(self.home, "temp/gettag.sh")
+        self.gettag_txt = os.path.join(self.home, "temp/gettag.txt")
 
         self.code_blocks = re.compile(r"^`{3}([\S]+)?\n([\s\S]+)\n`{3}", re.IGNORECASE)
 
     def sync(self):
+        """Sync the folders"""
         self.init_gettag_script()
         logger.debug("Syncing MD updates")
         self.sync_md_updates()
@@ -110,28 +118,30 @@ class BearSync:
             self.delete_old_temp_files()
             logger.debug("Exporting files")
             note_count = self.export_markdown()
-            logger.debug(f"Exported {note_count} files")
+            logger.debug("Exported %s files", note_count)
             self.write_time_stamp()
-            logger.debug(f"Syncing files from temp")
+            logger.debug("Syncing files from temp")
             self.rsync_files_from_temp()
             if self.export_image_repository and not self.export_as_textbundles:
                 self.copy_bear_images()
             # notify('Export completed')
-            logger.debug(f"{note_count} notes exported to: {self.export_path}")
+            logger.debug("%s notes exported to: %s", note_count, self.export_path)
             self.write_log(str(note_count) + " notes exported to: " + self.export_path)
         else:
             logger.debug("No changes found")
 
     def write_log(self, message):
-        if self.set_logging_on == True:
+        """Write to log"""
+        if self.set_logging_on:
             if not os.path.exists(self.sync_backup):
                 os.makedirs(self.sync_backup)
             time_stamp = datetime.datetime.now().strftime("%Y-%m-%d at %H:%M:%S")
             message = message.replace(self.export_path + "/", "")
-            with open(self.log_file, "a", encoding="utf-8") as f:
-                f.write(time_stamp + ": " + message + "\n")
+            with open(self.log_file, "a", encoding="utf-8") as dest:
+                dest.write(time_stamp + ": " + message + "\n")
 
     def check_db_modified(self):
+        """Check if the DB was modified"""
         if not os.path.exists(self.sync_ts_file):
             return True
         db_ts = self.get_file_date(self.bear_db)
@@ -139,15 +149,16 @@ class BearSync:
         return db_ts > last_export_ts
 
     def export_markdown(self):
+        """Export markdown"""
         with sqlite3.connect(self.bear_db) as conn:
             conn.row_factory = sqlite3.Row
             query = "SELECT * FROM `ZSFNOTE` WHERE `ZTRASHED` LIKE '0'"
-            c = conn.execute(query)
+            cursor = conn.execute(query)
         note_count = 0
-        for row in c:
+        for row in cursor:
             title = row["ZTITLE"]
             md_text = row["ZTEXT"].rstrip()
-            creation_date = row["ZCREATIONDATE"]
+            # creation_date = row["ZCREATIONDATE"]
             modified = row["ZMODIFICATIONDATE"]
             uuid = row["ZUNIQUEIDENTIFIER"]
             filename = self.clean_title(title)  # + date_time_conv(creation_date)
@@ -176,17 +187,15 @@ class BearSync:
         return note_count
 
     def check_image_hybrid(self, md_text):
+        """Check image hybrid"""
         if self.export_as_hybrids:
-            if re.search(r"\[image:(.+?)\]", md_text):
-                return True
-            else:
-                return False
+            return bool(re.search(r"\[image:(.+?)\]", md_text))
         else:
             return True
 
     def make_text_bundle(self, md_text, filepath, mod_dt):
         """
-        Exports as Textbundles with images included 
+        Exports as Textbundles with images included
         """
         bundle_path = filepath + ".textbundle"
         assets_path = os.path.join(bundle_path, "assets")
@@ -214,8 +223,10 @@ class BearSync:
         os.utime(bundle_path, (-1, mod_dt))
 
     def sub_path_from_tag(self, temp_path, filename, md_text):
+        """Extract sub path from tag"""
         # md_text = code_blocks.sub("", md_text)
         # Get tags in note:
+        logger.debug(temp_path)
         pattern1 = r"(?<!\S)\#([.\w\/\-]+)[ \n]?(?!([\/ \w]+\w[#]))"
         pattern2 = r"(?<![\S])\#([^ \d][.\w\/ ]+?)\#([ \n]|$)"
         if self.multi_tag_folders:
@@ -309,7 +320,7 @@ class BearSync:
         return md_text
 
     def copy_bear_images(self):
-        # Image files copied to a common image repository
+        """Image files copied to a common image repository"""
         subprocess.call(
             [
                 "rsync",
@@ -322,7 +333,7 @@ class BearSync:
         )
 
     def write_time_stamp(self):
-        # write to time-stamp.txt file (used during sync)
+        """write to time-stamp.txt file (used during sync)"""
         self.write_file(
             self.export_ts_file,
             "Markdown from Bear written at: "
@@ -337,7 +348,7 @@ class BearSync:
         )
 
     def hide_tags(self, md_text):
-        # Hide tags from being seen as H1, by placing `period+space` at start of line:
+        """Hide tags from being seen as H1, by placing `period+space` at start of line"""
         if self.hide_tags_in_comment_block:
             md_text = re.sub(r"(\n)[ \t]*(\#[\w.].+)", r"\1<!-- \2 -->", md_text)
         else:
@@ -345,7 +356,7 @@ class BearSync:
         return md_text
 
     def restore_tags(self, md_text):
-        # Tags back to normal Bear tags, stripping the `period+space` at start of line:
+        """Tags back to normal Bear tags, stripping the `period+space` at start of line"""
         # if hide_tags_in_comment_block:
         md_text = re.sub(r"(\n)<!--[ \t]*(\#[\w.].+?) -->", r"\1\2", md_text)
         # else:
@@ -353,6 +364,7 @@ class BearSync:
         return md_text
 
     def clean_title(self, title):
+        """Clean title"""
         title = title[:56].strip()
         if title == "":
             title = "Untitled"
@@ -361,17 +373,20 @@ class BearSync:
         return title.strip()
 
     def write_file(self, filename, file_content, modified):
+        """Write file"""
         with open(filename, "w", encoding="utf-8") as f:
             f.write(file_content)
         if modified > 0:
             os.utime(filename, (-1, modified))
 
     def read_file(self, file_name):
+        """Read file"""
         with open(file_name, "r", encoding="utf-8") as f:
             file_content = f.read()
         return file_content
 
     def get_file_date(self, filename):
+        """Get file date"""
         try:
             t = os.path.getmtime(filename)
             return t
@@ -379,27 +394,31 @@ class BearSync:
             return 0
 
     def dt_conv(self, dtnum):
-        # Formula for date offset based on trial and error:
+        """Formula for date offset based on trial and error"""
         hour = 3600  # seconds
         year = 365.25 * 24 * hour
         offset = year * 31 + hour * 6
         return dtnum + offset
 
     def date_time_conv(self, dtnum):
-        newnum = dt_conv(dtnum)
+        """Date time conv"""
+        newnum = self.dt_conv(dtnum)
         dtdate = datetime.datetime.fromtimestamp(newnum)
         # print(newnum, dtdate)
         return dtdate.strftime(" - %Y-%m-%d_%H%M")
 
     def time_stamp_ts(self, ts):
+        """Get timestamp"""
         dtdate = datetime.datetime.fromtimestamp(ts)
         return dtdate.strftime("%Y-%m-%d at %H:%M")
 
     def date_conv(self, dtnum):
+        """Date conv"""
         dtdate = datetime.datetime.fromtimestamp(dtnum)
         return dtdate.strftime("%Y-%m-%d")
 
     def delete_old_temp_files(self):
+        """Delete old temp files"""
         # Deletes all files in temp folder before new export using "shutil.rmtree()":
         # NOTE! CAUTION! Do not change this function unless you really know shutil.rmtree() well!
         if os.path.exists(self.temp_path) and "BearExportTemp" in self.temp_path:
@@ -411,6 +430,7 @@ class BearSync:
         os.makedirs(self.temp_path)
 
     def rsync_files_from_temp(self):
+        """Rsync"""
         # Moves markdown files to new folder using rsync:
         # This is a very important step!
         # By first exporting all Bear notes to an emptied temp folder,
@@ -445,6 +465,7 @@ class BearSync:
                 )
 
     def sync_md_updates(self):
+        """Sync md updates"""
         updates_found = False
         if not os.path.exists(self.sync_ts_file) or not os.path.exists(
             self.export_ts_file
@@ -456,27 +477,26 @@ class BearSync:
         self.update_sync_time_file(0)
         file_types = ("*.md", "*.txt", "*.markdown")
         for (root, dirnames, filenames) in os.walk(self.export_path):
-            """
-            This step walks down into all sub folders, if any.
-            """
+            logger.debug(dirnames)
             for pattern in file_types:
                 for filename in fnmatch.filter(filenames, pattern):
                     md_file = os.path.join(root, filename)
-                    ts = os.path.getmtime(md_file)
-                    if ts > ts_last_sync:
+                    timestamp = os.path.getmtime(md_file)
+                    if timestamp > ts_last_sync:
                         if not updates_found:  # Yet
-                            # Wait 5 sec at first for external files to finish downloading from dropbox.
+                            # Wait 5 sec at first for external files to finish
+                            # downloading from dropbox.
                             # Otherwise images in textbundles might be missing in import:
                             time.sleep(5)
                         updates_found = True
-                        md_text = read_file(md_file)
-                        backup_ext_note(md_file)
-                        if check_if_image_added(md_text, md_file):
-                            textbundle_to_bear(md_text, md_file, ts)
-                            write_log("Imported to Bear: " + md_file)
+                        md_text = self.read_file(md_file)
+                        self.backup_ext_note(md_file)
+                        if self.check_if_image_added(md_text, md_file):
+                            self.textbundle_to_bear(md_text, md_file, timestamp)
+                            self.write_log("Imported to Bear: " + md_file)
                         else:
-                            update_bear_note(md_text, md_file, ts, ts_last_export)
-                            write_log("Bear Note Updated: " + md_file)
+                            self.update_bear_note(md_text, md_file, timestamp, ts_last_export)
+                            self.write_log("Bear Note Updated: " + md_file)
         if updates_found:
             # Give Bear time to process updates:
             time.sleep(3)
@@ -487,6 +507,8 @@ class BearSync:
         return updates_found
 
     def check_if_image_added(self, md_text, md_file):
+        """Check if image added"""
+        logger.debug(md_file)
         # if not '.textbundle/' in md_file:
         #     return False
         matches = re.findall(r"!\[.*?\]\(assets/(.+?_).+?\)", md_text)
@@ -499,6 +521,7 @@ class BearSync:
         return False
 
     def textbundle_to_bear(self, md_text, md_file, mod_dt):
+        """Textbundle to bear"""
         md_text = self.restore_tags(md_text)
         bundle = os.path.split(md_file)[0]
         match = re.search(r"\{BearID:(.+?)\}", md_text)
@@ -509,22 +532,23 @@ class BearSync:
                 re.sub(r"\<\!-- ?\{BearID\:" + uuid + r"\} ?--\>", "", md_text).rstrip()
                 + "\n"
             )
-            md_text = insert_link_top_note(
+            md_text = self.insert_link_top_note(
                 md_text, "Images added! Link to original note: ", uuid
             )
         else:
             # New textbundle (with images), add path as tag:
-            md_text = get_tag_from_path(md_text, bundle, self.export_path)
-        write_file(md_file, md_text, mod_dt)
+            md_text = self.get_tag_from_path(md_text, bundle, self.export_path)
+        self.write_file(md_file, md_text, mod_dt)
         os.utime(bundle, (-1, mod_dt))
         subprocess.call(["open", "-a", "/applications/bear.app", bundle])
         time.sleep(0.5)
 
     def backup_ext_note(self, md_file):
+        """Backup external note"""
         if ".textbundle" in md_file:
             bundle_path = os.path.split(md_file)[0]
             bundle_name = os.path.split(bundle_path)[1]
-            target = os.path.join(sync_backup, bundle_name)
+            target = os.path.join(self.sync_backup, bundle_name)
             bundle_raw = os.path.splitext(target)[0]
             count = 2
             while os.path.exists(target):
@@ -534,17 +558,19 @@ class BearSync:
             shutil.copytree(bundle_path, target)
         else:
             # Overwrite former bacups of incoming changes, only keeps last one:
-            shutil.copy2(md_file, sync_backup + "/")
+            shutil.copy2(md_file, self.sync_backup + "/")
 
-    def update_sync_time_file(self, ts):
+    def update_sync_time_file(self, timestamp):
+        """Update sync time"""
         self.write_file(
             self.sync_ts_file,
             "Checked for Markdown updates to sync at: "
             + datetime.datetime.now().strftime("%Y-%m-%d at %H:%M:%S"),
-            ts,
+            timestamp,
         )
 
-    def update_bear_note(self, md_text, md_file, ts, ts_last_export):
+    def update_bear_note(self, md_text, md_file, timestamp, ts_last_export):
+        """Update bear note"""
         md_text = self.restore_tags(md_text)
         md_text = self.restore_image_links(md_text)
         uuid = ""
@@ -562,7 +588,7 @@ class BearSync:
             if sync_conflict:
                 link_original = "bear://x-callback-url/open-note?id=" + uuid
                 message = (
-                    "::Sync conflict! External update: " + self.time_stamp_ts(ts) + "::"
+                    "::Sync conflict! External update: " + self.time_stamp_ts(timestamp) + "::"
                 )
                 message += (
                     "\n[Click here to see original Bear note](" + link_original + ")"
@@ -585,7 +611,7 @@ class BearSync:
         else:
             # New external md Note, since no Bear uuid found in text:
             # message = '::New external Note - ' + time_stamp_ts(ts) + '::'
-            md_text = self.get_tag_from_path(md_text, md_file, export_path)
+            md_text = self.get_tag_from_path(md_text, md_file, self.export_path)
             x_create = "bear://x-callback-url/create?show_window=no"
             self.bear_x_callback(x_create, md_text, "", "")
         return
@@ -593,7 +619,7 @@ class BearSync:
     def get_tag_from_path(
         self, md_text, md_file, root_path, inbox_for_root=True, extra_tag=""
     ):
-        # extra_tag should be passed as '#tag' or '#space tag#'
+        """extra_tag should be passed as '#tag' or '#space tag#'"""
         path = md_file.replace(root_path, "")[1:]
         sub_path = os.path.split(path)[0]
         tags = []
@@ -614,7 +640,7 @@ class BearSync:
             tags.append(tag)
         if extra_tag != "":
             tags.append(extra_tag)
-        for tag in get_file_tags(md_file):
+        for tag in self.get_file_tags(md_file):
             tag = "#" + tag.strip()
             if " " in tag:
                 tag += "#"
@@ -622,15 +648,17 @@ class BearSync:
         return md_text.strip() + "\n\n" + " ".join(tags) + "\n"
 
     def get_file_tags(self, md_file):
+        """Get file tags"""
         try:
             subprocess.call([self.gettag_sh, md_file, self.gettag_txt])
-            text = re.sub(r"\\n\d{1,2}", r"", read_file(self.gettag_txt))
+            text = re.sub(r"\\n\d{1,2}", r"", self.read_file(self.gettag_txt))
             tag_list = json.loads(text)
             return tag_list
-        except:
+        except OSError:
             return []
 
     def bear_x_callback(self, x_command, md_text, message, orig_title):
+        """Bear x-callback"""
         if message != "":
             lines = md_text.splitlines()
             lines.insert(1, message)
@@ -647,8 +675,8 @@ class BearSync:
         time.sleep(0.2)
 
     def check_sync_conflict(self, uuid, ts_last_export):
+        """Check modified date of original note in Bear sqlite db!"""
         conflict = False
-        # Check modified date of original note in Bear sqlite db!
         with sqlite3.connect(self.bear_db) as conn:
             conn.row_factory = sqlite3.Row
             query = (
@@ -660,28 +688,28 @@ class BearSync:
         for row in c:
             modified = row["ZMODIFICATIONDATE"]
             uuid = row["ZUNIQUEIDENTIFIER"]
-            mod_dt = dt_conv(modified)
+            mod_dt = self.dt_conv(modified)
             conflict = mod_dt > ts_last_export
         return conflict
 
     def backup_bear_note(self, uuid):
-        # Get single note from Bear sqlite db!
+        """Get single note from Bear sqlite db!"""
         with sqlite3.connect(self.bear_db) as conn:
             conn.row_factory = sqlite3.Row
             query = (
                 "SELECT * FROM `ZSFNOTE` WHERE `ZUNIQUEIDENTIFIER` LIKE '" + uuid + "'"
             )
-            c = conn.execute(query)
+            cursor = conn.execute(query)
         title = ""
-        for row in c:  # Will only get one row if uuid is found!
+        for row in cursor:  # Will only get one row if uuid is found!
             title = row["ZTITLE"]
             md_text = row["ZTEXT"].rstrip()
             modified = row["ZMODIFICATIONDATE"]
-            mod_dt = dt_conv(modified)
-            created = row["ZCREATIONDATE"]
-            cre_dt = dt_conv(created)
+            mod_dt = self.dt_conv(modified)
+            # created = row["ZCREATIONDATE"]
+            # cre_dt = self.dt_conv(created)
             md_text = self.insert_link_top_note(md_text, "Link to updated note: ", uuid)
-            dtdate = datetime.datetime.fromtimestamp(cre_dt)
+            # dtdate = datetime.datetime.fromtimestamp(cre_dt)
             filename = self.clean_title(title)  # + dtdate.strftime(' - %Y-%m-%d_%H%M')
             if not os.path.exists(self.sync_backup):
                 os.makedirs(self.sync_backup)
@@ -699,6 +727,7 @@ class BearSync:
         return title
 
     def insert_link_top_note(self, md_text, message, uuid):
+        """Insert link"""
         lines = md_text.split("\n")
         title = re.sub(r"^#{1,6} ", r"", lines[0])
         link = (
@@ -714,6 +743,7 @@ class BearSync:
         return "\n".join(lines)
 
     def init_gettag_script(self):
+        """Gettag script"""
         gettag_script = """#!/bin/bash
         if [[ ! -e $1 ]] ; then
         echo 'file missing or not specified'
@@ -722,13 +752,14 @@ class BearSync:
         JSON="$(xattr -p com.apple.metadata:_kMDItemUserTags "$1" | xxd -r -p | plutil -convert json - -o -)"
         echo $JSON > "$2"
         """
-        temp = os.path.join(self.HOME, "temp")
+        temp = os.path.join(self.home, "temp")
         if not os.path.exists(temp):
             os.makedirs(temp)
         self.write_file(self.gettag_sh, gettag_script, 0)
         subprocess.call(["chmod", "777", self.gettag_sh])
 
     def notify(self, message):
+        """Notify"""
         title = "ul_sync_md.py"
         try:
             # Uses "terminal-notifier", download at:
@@ -745,7 +776,6 @@ class BearSync:
                     "default",
                 ]
             )
-        except:
-            write_log('"terminal-notifier.app" is missing!')
+        except OSError:
+            self.write_log('"terminal-notifier.app" is missing!')
         return
-
