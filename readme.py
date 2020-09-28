@@ -1,26 +1,28 @@
+"""Generates this README.md"""
 # INFO: generates this README.md
 from dataclasses import dataclass
 from pathlib import Path
 
 @dataclass
 class Info:
+    """Stores data about a project"""
     filename: str
     description: str
 
 
-projects = []
+PROJECTS = []
 
 for path in Path('.').rglob('*.py'):
     x = open(path.resolve()).read().splitlines()
     descriptions = list(filter(lambda line : line.startswith("# INFO:"), x))
     if len(descriptions) > 0:
         info = Info(filename=path.name, description=descriptions[0][8:])
-        projects.append(info)
+        PROJECTS.append(info)
 
 # sort the projects by description size
-projects = sorted(projects, key=lambda project: len(project.filename + project.description))
+PROJECTS = sorted(PROJECTS, key=lambda project: len(project.filename + project.description))
 
-projects = "\n".join([f"* `{p.filename}`, {p.description}" for p in projects])
+PROJECTS = "\n".join([f"* `{p.filename}`, {p.description}" for p in PROJECTS])
 
 template=f"""
 # python-experiments
@@ -29,7 +31,7 @@ template=f"""
 
 A place for Python experiments.
 
-{projects}
+{PROJECTS}
 
 """
 

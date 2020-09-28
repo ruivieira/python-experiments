@@ -1,7 +1,8 @@
+"""Utility to manipulate and query Bear notes"""
 # INFO: utility to manipulate and query Bear notes
 import argparse
-from bear import database as db
-from bear import sync
+from libbear import database as db
+from libbear import sync
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Bear CLI utility.', prog='bear')

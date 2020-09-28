@@ -1,6 +1,6 @@
+"""Hard-coded templates"""
 
-
-template = """
+TEMPLATE = """
 <!DOCTYPE html>
 <html>
   <head>
