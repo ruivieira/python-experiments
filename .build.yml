@@ -9,4 +9,5 @@ tasks:
       cd python-experiments
       pip install -r requirements-test.txt --user
   - lint: |
+      cd python-experiments
       pylint $(git ls-files '*.py')
