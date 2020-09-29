@@ -10,15 +10,17 @@ import time
 import shutil
 import fnmatch
 import json
-import coloredlogs
+import coloredlogs  # type: ignore
 import logging
 
 # Create a logger object.
 logger = logging.getLogger("bear")
-coloredlogs.install(level='DEBUG')
+coloredlogs.install(level="DEBUG")
+
 
 class BearSync:
     """Class to sync a bear db with a folder"""
+
     def __init__(self):
         # Exports to folders using first tag only, if `multi_tag_folders = False`
         self.make_tag_folders = True
@@ -79,8 +81,8 @@ class BearSync:
         )  # NOTE! Do not change the "BearExportTemp" folder name!!!
         self.bear_db = os.path.join(
             self.home,
-            "Library/Group Containers/9K33E3U3T4.net.shinyfrog.bear" +
-            "/Application Data/database.sqlite",
+            "Library/Group Containers/9K33E3U3T4.net.shinyfrog.bear"
+            + "/Application Data/database.sqlite",
         )
         self.sync_backup = os.path.join(
             self.home, "BearSyncBackup"
@@ -90,8 +92,8 @@ class BearSync:
         # Paths used in image exports:
         self.bear_image_path = os.path.join(
             self.home,
-            "Library/Group Containers/9K33E3U3T4.net.shinyfrog.bear/"+
-            "Application Data/Local Files/Note Images",
+            "Library/Group Containers/9K33E3U3T4.net.shinyfrog.bear/"
+            + "Application Data/Local Files/Note Images",
         )
         self.assets_path = os.path.join(self.home, self.export_path, "BearImages")
 
@@ -460,9 +462,7 @@ class BearSync:
                     ]
                 )
             else:
-                subprocess.call(
-                    ["rsync", "-r", "-t", self.temp_path + "/", dest_path]
-                )
+                subprocess.call(["rsync", "-r", "-t", self.temp_path + "/", dest_path])
 
     def sync_md_updates(self):
         """Sync md updates"""
@@ -495,7 +495,9 @@ class BearSync:
                             self.textbundle_to_bear(md_text, md_file, timestamp)
                             self.write_log("Imported to Bear: " + md_file)
                         else:
-                            self.update_bear_note(md_text, md_file, timestamp, ts_last_export)
+                            self.update_bear_note(
+                                md_text, md_file, timestamp, ts_last_export
+                            )
                             self.write_log("Bear Note Updated: " + md_file)
         if updates_found:
             # Give Bear time to process updates:
@@ -588,7 +590,9 @@ class BearSync:
             if sync_conflict:
                 link_original = "bear://x-callback-url/open-note?id=" + uuid
                 message = (
-                    "::Sync conflict! External update: " + self.time_stamp_ts(timestamp) + "::"
+                    "::Sync conflict! External update: "
+                    + self.time_stamp_ts(timestamp)
+                    + "::"
                 )
                 message += (
                     "\n[Click here to see original Bear note](" + link_original + ")"

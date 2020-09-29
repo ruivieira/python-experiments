@@ -5,11 +5,16 @@ from libbear import database as db
 from libbear import sync
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Bear CLI utility.', prog='bear')
-    parser.add_argument('--duplicates', dest='duplicates', action='store_true',
-        help="Find notes with duplicate titles")
-    parser.add_argument('--sync', dest='sync', action='store_true',
-        help="Sync notes with Mardown files")
+    parser = argparse.ArgumentParser(description="Bear CLI utility.", prog="bear")
+    parser.add_argument(
+        "--duplicates",
+        dest="duplicates",
+        action="store_true",
+        help="Find notes with duplicate titles",
+    )
+    parser.add_argument(
+        "--sync", dest="sync", action="store_true", help="Sync notes with Mardown files"
+    )
     args = parser.parse_args()
 
     conn = db.get_connection()

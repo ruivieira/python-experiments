@@ -11,8 +11,8 @@ HOME = str(Path.home())
 def get_connection():
     """Return a connection"""
     return sqlite3.connect(
-        f"{HOME}/Library/Group Containers/" +
-        "9K33E3U3T4.net.shinyfrog.bear/Application Data/database.sqlite"
+        f"{HOME}/Library/Group Containers/"
+        + "9K33E3U3T4.net.shinyfrog.bear/Application Data/database.sqlite"
     )
 
 
@@ -24,6 +24,7 @@ def get_titles(conn) -> List[str]:
     rows = cur.fetchall()
     return [row[0] for row in rows]
 
+
 def get_all_notes_text(conn) -> List[str]:
     """Get all notes' text"""
     cur = conn.cursor()
@@ -32,6 +33,7 @@ def get_all_notes_text(conn) -> List[str]:
     rows = cur.fetchall()
     return [row[0] for row in rows]
 
+
 def get_all_tasks(conn) -> List[str]:
     """Get all tasks"""
     cur = conn.cursor()
@@ -39,14 +41,15 @@ def get_all_tasks(conn) -> List[str]:
 
     rows = cur.fetchall()
     for row in rows:
-        print("-"*80)
+        print("-" * 80)
         print(row[0])
         tasks = re.findall(r"- \[ \] (.*)$", row[1])
         if len(tasks) > 0:
             for task in tasks:
-                print("="*50)
+                print("=" * 50)
                 print(task)
-    return "meh"
+    return ["meh"]
+
 
 def get_duplicate_titles(conn):
     """Get all duplicate titles"""
@@ -61,5 +64,5 @@ def get_duplicate_titles(conn):
         if pair[1] > 1:
             print(f"{pair[0]}: {pair[1]}")
             total += pair[1] - 1
-    print("-"*80)
+    print("-" * 80)
     print(f"Total: {total}")

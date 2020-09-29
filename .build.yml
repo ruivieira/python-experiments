@@ -12,3 +12,6 @@ tasks:
   - lint: |
       cd python-experiments
       pylint $(git ls-files '*.py')
+  - typing: |
+      cd python-experiments
+      mypy $(git ls-files '*.py')
