@@ -5,10 +5,10 @@ from typing import List
 import re
 from collections import Counter
 
-HOME = str(Path.home())
+HOME: str = str(Path.home())
 
 
-def get_connection():
+def get_connection() -> sqlite3.Connection:
     """Return a connection"""
     return sqlite3.connect(
         f"{HOME}/Library/Group Containers/"
@@ -16,7 +16,7 @@ def get_connection():
     )
 
 
-def get_titles(conn) -> List[str]:
+def get_titles(conn: sqlite3.Connection) -> List[str]:
     """Get all titles"""
     cur = conn.cursor()
     cur.execute("SELECT ZTITLE FROM ZSFNOTE")
@@ -25,7 +25,7 @@ def get_titles(conn) -> List[str]:
     return [row[0] for row in rows]
 
 
-def get_all_notes_text(conn) -> List[str]:
+def get_all_notes_text(conn: sqlite3.Connection) -> List[str]:
     """Get all notes' text"""
     cur = conn.cursor()
     cur.execute("SELECT ZTEXT FROM ZSFNOTE")
@@ -34,7 +34,7 @@ def get_all_notes_text(conn) -> List[str]:
     return [row[0] for row in rows]
 
 
-def get_all_tasks(conn) -> List[str]:
+def get_all_tasks(conn: sqlite3.Connection) -> List[str]:
     """Get all tasks"""
     cur = conn.cursor()
     cur.execute("SELECT ZTITLE, ZTEXT FROM ZSFNOTE")
@@ -51,16 +51,15 @@ def get_all_tasks(conn) -> List[str]:
     return ["meh"]
 
 
-def get_duplicate_titles(conn):
+def get_duplicate_titles(conn: sqlite3.Connection) -> None:
     """Get all duplicate titles"""
     cur = conn.cursor()
     cur.execute("SELECT ZTITLE FROM ZSFNOTE")
 
     rows = cur.fetchall()
     counts = Counter([row[0] for row in rows])
-    counts = counts.items()
     total = 0
-    for pair in counts:
+    for pair in counts.items():
         if pair[1] > 1:
             print(f"{pair[0]}: {pair[1]}")
             total += pair[1] - 1

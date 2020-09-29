@@ -34,12 +34,10 @@ PROJECTS_DESCRIPTION = "\n".join(
 template = f"""
 # python-experiments
 
-![](docs/snake.png)
+![snake](docs/snake.png)
 
 A place for Python experiments.
 
-{PROJECTS_DESCRIPTION}
-
-"""
+{PROJECTS_DESCRIPTION}"""
 
 print(template)

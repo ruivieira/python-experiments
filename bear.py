@@ -1,11 +1,14 @@
 """Utility to manipulate and query Bear notes"""
 # INFO: utility to manipulate and query Bear notes
 import argparse
+from sqlite3 import Connection
 from libbear import database as db
 from libbear import sync
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Bear CLI utility.", prog="bear")
+    parser: argparse.ArgumentParser = argparse.ArgumentParser(
+        description="Bear CLI utility.", prog="bear"
+    )
     parser.add_argument(
         "--duplicates",
         dest="duplicates",
@@ -15,9 +18,9 @@ if __name__ == "__main__":
     parser.add_argument(
         "--sync", dest="sync", action="store_true", help="Sync notes with Mardown files"
     )
-    args = parser.parse_args()
+    args: argparse.Namespace = parser.parse_args()
 
-    conn = db.get_connection()
+    conn: Connection = db.get_connection()
 
     if args.duplicates:
         db.get_duplicate_titles(conn)
