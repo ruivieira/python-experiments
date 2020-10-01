@@ -34,7 +34,7 @@ PROJECTS_DESCRIPTION = "\n".join(
 template = f"""
 # python-experiments [![builds.sr.ht status](https://builds.sr.ht/~ruivieira/python-experiments.svg)](https://builds.sr.ht/~ruivieira/python-experiments?)
 
-![snake](docs/snake.png)
+![snake](docs/felix.png)
 
 A place for Python experiments.
 

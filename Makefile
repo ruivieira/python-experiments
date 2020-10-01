@@ -1,4 +1,4 @@
-.PHONY: all bear wax readme tests
+.PHONY: all bear wax readme tests arxivstatsbot arxivstatsbot-linux
 
 SOURCES := $(shell git ls-files '*.py')
 
@@ -10,6 +10,18 @@ wax:
 	@python -m nuitka --follow-imports --show-progress wax.py
 readme:
 	@python -m nuitka --follow-imports --show-progress readme.py
+arxivstatsbot:
+	python -m nuitka --follow-imports --show-progress arxivstatsbot.py
+arxivstatsbot-linux:
+	docker run -it -v $(pwd):/project -w /project ruivieira/python-experiments:latest python3 -m nuitka --follow-imports --show-progress arxivstatsbot.py
+build-container:
+clean:
+	rm -f *.bin
+	rm -Rf bear.build
+	rm -Rf wax.build
+	rm -Rf readme.build
+	rm -Rf arxivstatsbot.build
+
 
 tests:
 	pylint $(SOURCES)
