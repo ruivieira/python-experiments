@@ -6,8 +6,7 @@ import configparser
 from datetime import date, timedelta
 from typing import List
 from mastodon import Mastodon  # type: ignore
-import arxivist as arxiv
-from arxivist import Entry
+from arxivist.core import Entry, ArXivist
 
 
 connection = sqlite3.connect("arXiv.db")
@@ -24,7 +23,7 @@ DATE_END = "{}-{:02d}-{:02d}".format(today.year, today.month, today.day)
 DATE_START = "{}-{:02d}-{:02d}".format(past.year, past.month, past.day)
 print("Getting papers from {} to {}".format(DATE_START, DATE_END))
 
-entries: List[Entry] = arxiv.ArXivist().fetch(DATE_START, DATE_END)
+entries: List[Entry] = ArXivist().fetch(DATE_START, DATE_END)
 
 sql_entries = [(entry.title, entry.arxiv_id, False) for entry in entries]
 
