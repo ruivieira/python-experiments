@@ -1,12 +1,21 @@
 """Bear database handling methods"""
 import sqlite3
 from pathlib import Path
-from typing import List
+from typing import Dict, List
 import re
 from collections import Counter
 
 HOME: str = str(Path.home())
 
+
+class Task:
+    """Class to hold information about a single task"""
+    def __init__(self):
+        self.identifier: str = None
+        self.task: str = None
+        self.title: str = None
+    def __repr__(self):
+        return f"[identifier: {self.identifier}, task: {self.task}, title: {self.title}]"
 
 def get_connection() -> sqlite3.Connection:
     """Return a connection"""
@@ -34,22 +43,27 @@ def get_all_notes_text(conn: sqlite3.Connection) -> List[str]:
     return [row[0] for row in rows]
 
 
-def get_all_tasks(conn: sqlite3.Connection) -> List[str]:
+def get_all_tasks(conn: sqlite3.Connection) -> Dict[str, List[Task]]:
     """Get all tasks"""
     cur = conn.cursor()
-    cur.execute("SELECT ZTITLE, ZTEXT FROM ZSFNOTE")
-
+    cur.execute("SELECT ZUNIQUEIDENTIFIER, ZTITLE, ZTEXT FROM ZSFNOTE")
     rows = cur.fetchall()
-    for row in rows:
-        print("-" * 80)
-        print(row[0])
-        tasks = re.findall(r"- \[ \] (.*)$", row[1])
-        if len(tasks) > 0:
-            for task in tasks:
-                print("=" * 50)
-                print(task)
-    return ["meh"]
 
+    tasks:Dict[str, List[Task]] = {}
+
+    for row in rows:
+        _tasks:List[str] = re.findall(r"- \[ \] (.*)", row[2])
+        if len(_tasks) > 0:
+            if row[1] not in tasks:
+                tasks[row[1]] = []
+            for match in _tasks:
+                task = Task()
+                task.identifier = row[0]
+                task.title = row[1]
+                task.task = match
+
+                tasks[row[1]].append(task)
+    return tasks
 
 def get_duplicate_titles(conn: sqlite3.Connection) -> None:
     """Get all duplicate titles"""

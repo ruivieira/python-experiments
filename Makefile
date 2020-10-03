@@ -6,6 +6,8 @@ all: bear wax readme tests
 bear:
 	@python -m nuitka --follow-imports --show-progress bear.py
 	@sudo mv bear.bin /usr/local/bin/bear
+bear-linux:
+	docker run -it -v $(shell pwd):/project -w /project ruivieira/python-experiments:latest python3 -m nuitka --follow-imports --show-progress bear.py
 wax:
 	@python -m nuitka --follow-imports --show-progress wax.py
 readme:
@@ -13,16 +15,15 @@ readme:
 arxivstatsbot:
 	python -m nuitka --follow-imports --show-progress arxivstatsbot.py
 arxivstatsbot-linux:
-	docker run -it -v $(pwd):/project -w /project ruivieira/python-experiments:latest python3 -m nuitka --follow-imports --show-progress arxivstatsbot.py
+	docker run -it -v $(shell pwd):/project -w /project ruivieira/python-experiments:latest python3 -m nuitka --follow-imports --show-progress arxivstatsbot.py
 build-container:
+	docker build -t ruivieira/python-experiments:latest .
 clean:
 	rm -f *.bin
 	rm -Rf bear.build
 	rm -Rf wax.build
 	rm -Rf readme.build
 	rm -Rf arxivstatsbot.build
-
-
 tests:
 	pylint $(SOURCES)
 	mypy $(SOURCES)
