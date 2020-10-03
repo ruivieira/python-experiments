@@ -2,7 +2,7 @@
 # INFO: utility to manipulate and query Bear notes
 import argparse
 from sqlite3 import Connection
-from colorama import Fore, Back, Style
+from colorama import Style   # type: ignore
 from libbear import database as db
 from libbear import sync
 

@@ -1,6 +1,7 @@
 """Bear database handling methods"""
 import sqlite3
 from pathlib import Path
+from dataclasses import dataclass
 from typing import Dict, List
 import re
 from collections import Counter
@@ -8,14 +9,12 @@ from collections import Counter
 HOME: str = str(Path.home())
 
 
+@dataclass
 class Task:
     """Class to hold information about a single task"""
-    def __init__(self):
-        self.identifier: str = None
-        self.task: str = None
-        self.title: str = None
-    def __repr__(self):
-        return f"[identifier: {self.identifier}, task: {self.task}, title: {self.title}]"
+    identifier: str
+    task: str
+    title: str
 
 def get_connection() -> sqlite3.Connection:
     """Return a connection"""
@@ -57,10 +56,7 @@ def get_all_tasks(conn: sqlite3.Connection) -> Dict[str, List[Task]]:
             if row[1] not in tasks:
                 tasks[row[1]] = []
             for match in _tasks:
-                task = Task()
-                task.identifier = row[0]
-                task.title = row[1]
-                task.task = match
+                task = Task(identifier=row[0], title=row[1], task=match)
 
                 tasks[row[1]].append(task)
     return tasks
