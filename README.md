@@ -6,8 +6,10 @@
 A place for Python experiments.
 
 * `readme.py`, generates this README.md
+* `pyxai.py`, A library for AI/ML explainability
 * `core.py`, Library to fetch pre-prints from arXiv
 * `bear.py`, utility to manipulate and query Bear notes
+* `jupyter_extract.py`, utility to convert Jupyter to Markdown
 * `arxivstatsbot.py`, Mastodon bot announcing new arXiv stats pre-prints
 
 ![felix-graduated](docs/felix-graduated.png)
