@@ -10,6 +10,7 @@ A place for Python experiments.
 * `core.py`, Library to fetch pre-prints from arXiv
 * `bear.py`, utility to manipulate and query Bear notes
 * `jupyter_extract.py`, utility to convert Jupyter to Markdown
+* `intrplate.py`, Generate synthetic data using B-spline interpolation
 * `arxivstatsbot.py`, Mastodon bot announcing new arXiv stats pre-prints
 
 ![felix-graduated](docs/felix-graduated.png)
