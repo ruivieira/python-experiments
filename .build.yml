@@ -7,8 +7,8 @@ sources:
 tasks:
   - setup: |
       cd python-experiments
-      pip install -r requirements.txt --user
-      pip install -r requirements-test.txt --user
+      pip install poetry
+      poetry install
   - lint: |
       cd python-experiments
       pylint $(git ls-files '*.py')

@@ -4,16 +4,16 @@ SOURCES := $(shell git ls-files '*.py')
 
 all: bear wax readme tests
 bear:
-	@python -m nuitka --follow-imports --show-progress bear.py
-	@sudo mv bear.bin /usr/local/bin/bear
+	poetry run python -m nuitka --follow-imports --show-progress bear.py
+	sudo mv bear.bin /usr/local/bin/bear
 bear-linux:
 	docker run -it -v $(shell pwd):/project -w /project ruivieira/python-experiments:latest python3 -m nuitka --follow-imports --show-progress bear.py
 wax:
-	@python -m nuitka --follow-imports --show-progress wax.py
+	poetry run python -m nuitka --follow-imports --show-progress wax.py
 readme:
-	@python -m nuitka --follow-imports --show-progress readme.py
+	poetry run python -m nuitka --follow-imports --show-progress readme.py
 arxivstatsbot:
-	python -m nuitka --follow-imports --show-progress arxivstatsbot.py
+	poetry run python -m nuitka --follow-imports --show-progress arxivstatsbot.py
 arxivstatsbot-linux:
 	docker run -it -v $(shell pwd):/project -w /project ruivieira/python-experiments:latest python3 -m nuitka --follow-imports --show-progress arxivstatsbot.py
 build-container:
@@ -25,5 +25,5 @@ clean:
 	rm -Rf readme.build
 	rm -Rf arxivstatsbot.build
 tests:
-	pylint $(SOURCES)
-	mypy $(SOURCES)
+	poetry run pylint $(SOURCES)
+	poetry run mypy $(SOURCES)
