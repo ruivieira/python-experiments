@@ -3,7 +3,7 @@
 
 ![felix](docs/felix.png)
 
-A place for Python experiments.
+A place for Python experiments. Documentation available [here](https://ruivieira.github.io/python-experiments/).
 
 * `readme.py`, generates this README.md
 * `pyxai.py`, A library for AI/ML explainability

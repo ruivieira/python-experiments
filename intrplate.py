@@ -37,6 +37,7 @@ def basis_spline(data, size: int = 100, degree: int = 3, periodic: bool = False)
 def noisy_basis_spline(
     data, size: int = 100, degree: int = 3, periodic: bool = False, std: float = 1.0
 ):
+    """Generate a noisy B-spline dataset"""
     interpolated = basis_spline(data, size, degree, periodic)
     noise = np.random.normal(0, std, interpolated.shape)
     return interpolated + noise
