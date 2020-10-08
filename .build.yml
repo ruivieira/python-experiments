@@ -8,10 +8,10 @@ tasks:
   - setup: |
       cd python-experiments
       pip install --user poetry --progress-bar off
-      poetry install --no-root --no-dev
+      poetry install --no-root
   - lint: |
       cd python-experiments
-      pylint $(git ls-files '*.py')
+      poetry run pylint $(git ls-files '*.py')
   - typing: |
       cd python-experiments
-      mypy $(git ls-files '*.py')
+      poetry run mypy $(git ls-files '*.py')
