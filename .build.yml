@@ -7,7 +7,7 @@ sources:
 tasks:
   - setup: |
       cd python-experiments
-      pip install poetry
+      pip install --user poetry --progress-bar off
       poetry install
   - lint: |
       cd python-experiments
