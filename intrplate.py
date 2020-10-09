@@ -1,5 +1,6 @@
 """Generate synthetic data using B-spline interpolation"""
 # INFO: Generate synthetic data using B-spline interpolation
+from typing import List, Union
 import numpy as np  # type: ignore
 import scipy.interpolate as interpolate  # type: ignore
 
@@ -41,3 +42,20 @@ def noisy_basis_spline(
     interpolated = basis_spline(data, size, degree, periodic)
     noise = np.random.normal(0, std, interpolated.shape)
     return interpolated + noise
+
+
+def interpolate_categorical(
+    indices: Union[List[int], List[float]], categories: List[str], size: int
+) -> List[str]:
+    """Interpolation for categorical variables"""
+    func = interpolate.interp1d(
+        indices,
+        range(len(categories)),
+        kind="nearest",
+        fill_value=(0, len(categories) - 1),
+        bounds_error=False,
+    )
+    x_new = np.linspace(indices[0], indices[-1], size)
+    y_idx: List[float] = func(x_new)
+    y_new: List[str] = [categories[int(i)] for i in y_idx]
+    return np.vstack((x_new, y_new)).T
