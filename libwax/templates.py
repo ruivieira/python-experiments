@@ -1,5 +1,5 @@
 """Hard-coded templates"""
-
+# fmt: off
 TEMPLATE = """
 <!DOCTYPE html>
 <html>

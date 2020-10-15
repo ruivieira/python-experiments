@@ -2,7 +2,7 @@
 # INFO: utility to manipulate and query Bear notes
 import argparse
 from sqlite3 import Connection
-from colorama import Style   # type: ignore
+from colorama import Style  # type: ignore
 from libbear import database as db
 from libbear import sync
 
@@ -23,7 +23,9 @@ if __name__ == "__main__":
     parser.add_argument(
         "--tasks", dest="tasks", action="store_true", help="List all tasks"
     )
-    parser.add_argument("--links", dest="links", action="store_true", help="Show callback links")
+    parser.add_argument(
+        "--links", dest="links", action="store_true", help="Show callback links"
+    )
 
     args: argparse.Namespace = parser.parse_args()
 
@@ -39,7 +41,10 @@ if __name__ == "__main__":
         for key in tasks:
             print(Style.DIM + key)
             if args.links:
-                print(Style.DIM + f"bear://x-callback-url/open-note?id={tasks[key][0].identifier}")
+                print(
+                    Style.DIM
+                    + f"bear://x-callback-url/open-note?id={tasks[key][0].identifier}"
+                )
             for task in tasks[key]:
                 print(Style.NORMAL + f"\t{task.task}")
     else:

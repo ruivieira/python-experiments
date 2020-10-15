@@ -6,6 +6,7 @@
 A place for Python experiments. Documentation available [here](https://ruivieira.github.io/python-experiments/).
 
 * `readme.py`, generates this README.md
+* `parrot.py`, Markov chain inspired tweets
 * `pyxai.py`, A library for AI/ML explainability
 * `core.py`, Library to fetch pre-prints from arXiv
 * `bear.py`, utility to manipulate and query Bear notes

@@ -34,12 +34,12 @@ PROJECTS_DESCRIPTION = "\n".join(
 )
 
 # get the graduated projects
-PROJECTS_GRADUATED:List[Info] = []
+PROJECTS_GRADUATED: List[Info] = []
 
-with open('graduated.json') as json_file:
+with open("graduated.json") as json_file:
     data = json.load(json_file)
     for p in data:
-        project = Info(p['name'], p['description'], p['url'])
+        project = Info(p["name"], p["description"], p["url"])
         PROJECTS_GRADUATED.append(project)
 
 PROJECTS_GRADUATED_DESCRIPTION = "\n".join(
@@ -51,7 +51,7 @@ template = f"""
 
 ![felix](docs/felix.png)
 
-A place for Python experiments.
+A place for Python experiments. Documentation available [here](https://ruivieira.github.io/python-experiments/).
 
 {PROJECTS_DESCRIPTION}
 

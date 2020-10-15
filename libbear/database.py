@@ -12,9 +12,11 @@ HOME: str = str(Path.home())
 @dataclass
 class Task:
     """Class to hold information about a single task"""
+
     identifier: str
     task: str
     title: str
+
 
 def get_connection() -> sqlite3.Connection:
     """Return a connection"""
@@ -48,10 +50,10 @@ def get_all_tasks(conn: sqlite3.Connection) -> Dict[str, List[Task]]:
     cur.execute("SELECT ZUNIQUEIDENTIFIER, ZTITLE, ZTEXT FROM ZSFNOTE")
     rows = cur.fetchall()
 
-    tasks:Dict[str, List[Task]] = {}
+    tasks: Dict[str, List[Task]] = {}
 
     for row in rows:
-        _tasks:List[str] = re.findall(r"- \[ \] (.*)", row[2])
+        _tasks: List[str] = re.findall(r"- \[ \] (.*)", row[2])
         if len(_tasks) > 0:
             if row[1] not in tasks:
                 tasks[row[1]] = []
@@ -60,6 +62,7 @@ def get_all_tasks(conn: sqlite3.Connection) -> Dict[str, List[Task]]:
 
                 tasks[row[1]].append(task)
     return tasks
+
 
 def get_duplicate_titles(conn: sqlite3.Connection) -> None:
     """Get all duplicate titles"""
