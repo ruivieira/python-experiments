@@ -27,4 +27,4 @@ clean:
 tests:
 	poetry run pylint $(SOURCES)
 	poetry run mypy $(SOURCES)
-	poetry run black --check $(SOURCES) --exclude 'libwax/templates.py'
+	poetry run black --check $(SOURCES)

@@ -15,3 +15,6 @@ tasks:
   - typing: |
       cd python-experiments
       poetry run mypy $(git ls-files '*.py')
+  - formatting: |
+      cd python-experiments
+      poetry run black --check $(git ls-files '*.py')
