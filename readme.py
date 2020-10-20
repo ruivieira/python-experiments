@@ -57,6 +57,17 @@ A place for Python experiments. Documentation available [here](https://ruivieira
 
 ![felix-graduated](docs/felix-graduated.png)
 ## Graduated
-{PROJECTS_GRADUATED_DESCRIPTION}"""
+{PROJECTS_GRADUATED_DESCRIPTION}
+
+
+
+![octopus](docs/octopus.png)
+## (λ Hy!)
+
+Things using the Hy programming language.
+
+* [SICP exercises](https://ruivieira.dev/codex/python-experiments/sicp-chapter1.html)
+"""
+
 
 print(template)

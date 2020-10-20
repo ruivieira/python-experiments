@@ -17,12 +17,14 @@ jupyter = "^1.0.0"
 scipy = "^1.5.2"
 markovify = "^0.8.3"
 tweepy = "^3.9.0"
+hy = "^0.19.0"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.6.0"
 mypy = "^0.782"
 black = "^20.8b1"
 ghp-import = "^1.0.0"
+jedhy = {git = "https://github.com/ekaschalk/jedhy.git"}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

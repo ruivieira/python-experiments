@@ -17,3 +17,13 @@ A place for Python experiments. Documentation available [here](https://ruivieira
 ![felix-graduated](docs/felix-graduated.png)
 ## Graduated
 * `python-ssm`, A library for State-Space Models (SSM) [[repo](https://git.sr.ht/~ruivieira/python-ssm)]
+
+
+
+![octopus](docs/octopus.png)
+## (λ Hy!)
+
+Things using the Hy programming language.
+
+* [SICP exercises](https://ruivieira.dev/codex/python-experiments/sicp-chapter1.html)
+

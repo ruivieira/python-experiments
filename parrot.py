@@ -27,10 +27,12 @@ class Parrot:
         """Generate fake tweets"""
         _model = markovify.Text(". ".join(self._data))
         result = []
-        for _ in range(number):
+        index = 0
+        while index < number:
             parrot_tweet = _model.make_short_sentence(280)
             if parrot_tweet:
                 result.append(parrot_tweet)
+                index += 1
         return result
 
 
@@ -46,7 +48,9 @@ if __name__ == "__main__":
     auth = tweepy.OAuthHandler(api_key, api_secret)
     auth.set_access_token(consumer_token, consumer_secret)
 
-    parrot = Parrot(api=tweepy.API(auth))
+    session_api = tweepy.API(auth)
+
+    parrot = Parrot(api=session_api)
     parrot.train_user(username="ruimvieira", number=1000)
     tweets = parrot.generate(20)
     for tweet in tweets:
