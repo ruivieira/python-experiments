@@ -1,8 +1,8 @@
-.PHONY: all bear wax readme tests arxivstatsbot arxivstatsbot-linux
+.PHONY: all bear wax readme tests arxivstatsbot arxivstatsbot-linux sb
 
 SOURCES := $(shell git ls-files '*.py')
 
-all: bear wax readme tests
+all: bear wax readme tests sb
 bear:
 	poetry run python -m nuitka --follow-imports --show-progress bear.py
 	sudo mv bear.bin /usr/local/bin/bear
@@ -12,6 +12,9 @@ wax:
 	poetry run python -m nuitka --follow-imports --show-progress wax.py
 readme:
 	poetry run python -m nuitka --follow-imports --show-progress readme.py
+sb:
+	poetry run python -m nuitka --follow-imports --show-progress sb.py
+	sudo mv sb.bin /usr/local/bin/sb
 arxivstatsbot:
 	poetry run python -m nuitka --follow-imports --show-progress arxivstatsbot.py
 arxivstatsbot-linux:
