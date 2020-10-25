@@ -1,8 +1,6 @@
 """Manage client-side Jupyter notebooks"""
 # INFO: Manage client-side Jupyter notebooks
 # pylint: disable=R0903
-import json
-from typing import List, Union
 import argparse
 import glob
 import os
@@ -12,7 +10,7 @@ import logging
 import unicodedata
 import re
 import coloredlogs  # type: ignore
-from jupex import Notebook, MarkdownCell, SourceCell, parse_notebook
+from jupex import Notebook, parse_notebook
 
 # Create a logger object.
 logger = logging.getLogger("sb")

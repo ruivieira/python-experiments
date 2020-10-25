@@ -1,6 +1,8 @@
 """Utility to convert Jupyter to Markdown"""
 # INFO: utility to convert Jupyter to Markdown
+# pylint: disable=R0903
 from typing import List, Union
+import json
 
 
 class Notebook:
