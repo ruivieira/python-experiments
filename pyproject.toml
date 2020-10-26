@@ -23,6 +23,7 @@ Pillow = "^8.0.0"
 lxml = "^4.6.1"
 csscompressor = "^0.9.5"
 jsmin = "^2.2.2"
+coconut = "^1.4.3"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.6.0"

@@ -67,6 +67,12 @@ A place for Python experiments. Documentation available [here](https://ruivieira
 Things using the Hy programming language.
 
 * [SICP exercises](https://ruivieira.dev/codex/python-experiments/sicp-chapter1.html)
+
+
+![coconut](docs/coconut.png)
+## coconut
+
+Things using the `coconut` language
 """
 
 

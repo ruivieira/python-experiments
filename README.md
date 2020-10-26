@@ -5,13 +5,14 @@
 
 A place for Python experiments. Documentation available [here](https://ruivieira.github.io/python-experiments/).
 
+* `jboptim.py`, Optimise Jupyter books
 * `readme.py`, generates this README.md
 * `parrot.py`, Markov chain inspired tweets
 * `sb.py`, Manage client-side Jupyter notebooks
 * `pyxai.py`, A library for AI/ML explainability
 * `core.py`, Library to fetch pre-prints from arXiv
+* `jupex.py`, utility to convert Jupyter to Markdown
 * `bear.py`, utility to manipulate and query Bear notes
-* `jupyter_extract.py`, utility to convert Jupyter to Markdown
 * `intrplate.py`, Generate synthetic data using B-spline interpolation
 * `arxivstatsbot.py`, Mastodon bot announcing new arXiv stats pre-prints
 
@@ -27,3 +28,10 @@ A place for Python experiments. Documentation available [here](https://ruivieira
 Things using the Hy programming language.
 
 * [SICP exercises](https://ruivieira.dev/codex/python-experiments/sicp-chapter1.html)
+
+
+![coconut](docs/coconut.png)
+## coconut
+
+Things using the `coconut` language
+

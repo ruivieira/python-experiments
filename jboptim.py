@@ -28,4 +28,9 @@ def parse_html(html: str) -> BeautifulSoup:
 
 if __name__ == "__main__":
     html_files = get_html_files(SOURCE)
-    print(html_files)
+    for html_file in html_files:
+        source = read_file(html_file)
+        soup = parse_html(source)
+        # find copy buttons
+        elems = soup.find_all("a", {"class": ["copybtn", "o-tooltip--left"]})
+        print(elems)
