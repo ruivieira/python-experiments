@@ -1,5 +1,5 @@
 
-# python-experiments [![builds.sr.ht status](https://builds.sr.ht/~ruivieira/python-experiments.svg)](https://builds.sr.ht/~ruivieira/python-experiments?)
+# python-experiments ![builds.sr.ht status](https://builds.sr.ht/~ruivieira/python-experiments.svg) ![Tests](https://github.com/ruivieira/python-experiments/workflows/Tests/badge.svg)
 
 ![felix](docs/felix.png)
 
