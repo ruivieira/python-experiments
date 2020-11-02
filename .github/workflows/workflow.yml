@@ -28,7 +28,6 @@ jobs:
           poetry config cache-dir ~/.poetry
           poetry config virtualenvs.path ~/.poetry/venv
 
-
       - name: Cache Poetry virtualenv
         uses: actions/cache@v1
         id: cache

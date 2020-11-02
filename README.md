@@ -9,6 +9,7 @@ A place for Python experiments. Documentation available [here](https://ruivieira
 * `readme.py`, generates this README.md
 * `parrot.py`, Markov chain inspired tweets
 * `sb.py`, Manage client-side Jupyter notebooks
+* `pmmlzoo.py`, Tool to create test PMML models
 * `pyxai.py`, A library for AI/ML explainability
 * `core.py`, Library to fetch pre-prints from arXiv
 * `jupex.py`, utility to convert Jupyter to Markdown
