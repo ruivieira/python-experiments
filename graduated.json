@@ -3,5 +3,11 @@
         "name": "python-ssm",
         "description": "A library for State-Space Models (SSM)",
         "url": "https://git.sr.ht/~ruivieira/python-ssm"
+    },
+    {
+        "name": "pmml-zoo",
+        "description": "A REST server to quickly create test PMML models",
+        "url": "https://github.com/ruivieira/pmml-zoo"
     }
+
 ]

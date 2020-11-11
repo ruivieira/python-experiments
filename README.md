@@ -9,7 +9,6 @@ A place for Python experiments. Documentation available [here](https://ruivieira
 * `readme.py`, generates this README.md
 * `parrot.py`, Markov chain inspired tweets
 * `sb.py`, Manage client-side Jupyter notebooks
-* `pmmlzoo.py`, Tool to create test PMML models
 * `pyxai.py`, A library for AI/ML explainability
 * `core.py`, Library to fetch pre-prints from arXiv
 * `jupex.py`, utility to convert Jupyter to Markdown
@@ -20,6 +19,7 @@ A place for Python experiments. Documentation available [here](https://ruivieira
 ![felix-graduated](docs/felix-graduated.png)
 ## Graduated
 * `python-ssm`, A library for State-Space Models (SSM) [[repo](https://git.sr.ht/~ruivieira/python-ssm)]
+* `pmml-zoo`, A REST server to quickly create test PMML models [[repo](https://github.com/ruivieira/pmml-zoo)]
 
 
 
