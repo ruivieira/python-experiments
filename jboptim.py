@@ -74,6 +74,27 @@ def append_to_head(doc: BeautifulSoup, html: str) -> None:
         doc.head.insert(0, tag)
 
 
+def append_after_body(doc: BeautifulSoup, html: str) -> None:
+    """Append after body"""
+    print(action_log(Fore.GREEN, "[APPEND]", "adding after body"))
+    tag = BeautifulSoup(html, features="html.parser")
+    if doc.body:
+        doc.body.insert(2, tag)
+
+
+def append_buttons(doc: BeautifulSoup) -> None:
+    """Add buttons"""
+    elems = doc.find_all("div", {"class": "cell tag_hide-input docutils"})
+    if len(elems) > 0:
+        for element in elems:
+            print(action_log(Fore.GREEN, "[APPEND]", "Adding hidden input button"))
+            tag = BeautifulSoup(
+                '<button class="input-toggle" onclick="hideButton(this)">show</button>',
+                features="html.parser",
+            )
+            element.insert(1, tag)
+
+
 def update_tag(
     doc: BeautifulSoup,
     selector: str,
@@ -101,6 +122,13 @@ def update_tag(
                 f"No elements found matching {selector} [{attrs}]",
             )
         )
+
+
+def change_footer(doc: BeautifulSoup):
+    """Remove container class from footer"""
+    footer_inner = doc.select("footer > div.container")
+    if len(footer_inner) > 0:
+        footer_inner[0].attrs["class"] = ""
 
 
 if __name__ == "__main__":
@@ -228,7 +256,28 @@ if __name__ == "__main__":
             "div",
             {"class": "cell tag_hide-input docutils container"},
             "class",
-            "cell tag_hide-input docutils container",
+            "cell tag_hide-input docutils",
+        )
+        update_tag(
+            soup,
+            "div",
+            {"class": "cell_input docutils container"},
+            "class",
+            "cell_input docutils",
+        )
+        update_tag(
+            soup,
+            "div",
+            {"class": "cell_output docutils container"},
+            "class",
+            "cell_output docutils",
+        )
+        update_tag(
+            soup,
+            "div",
+            {"class": "cell docutils container"},
+            "class",
+            "cell docutils",
         )
 
         update_tag(soup, "div", {"id": "content"}, "class", "container")
@@ -260,6 +309,70 @@ if __name__ == "__main__":
             </script>
         """,
         )
+
+        append_after_body(
+            soup,
+            """
+         <script>
+               let hideButton = function(element) {
+          const element_to_hide = element.nextElementSibling;
+          console.log(element_to_hide);
+          if (window.getComputedStyle(element_to_hide).display === "none") {
+              // it is already hidden, show now.
+              element_to_hide.style.display = "block";
+              element.textContent = "hide";
+          } else {
+              // it is showing, hide
+              element_to_hide.style.display = "none";
+              element.textContent = "show";
+          }
+      }
+    // trying to follow the section
+    let isInViewport = function (el) {
+      let box = el.getBoundingClientRect();
+      var rect     = el.getBoundingClientRect(),
+      vWidth   = window.innerWidth || document.documentElement.clientWidth,
+      vHeight  = window.innerHeight || document.documentElement.clientHeight,
+      efp      = function (x, y) { return document.elementFromPoint(x, y) };
+
+      // Return false if it's not in the viewport
+      if (rect.right < 0 || rect.bottom < 0 || rect.left > vWidth || rect.top > vHeight)
+      return false;
+
+          // Return true if any of its four corners are visible
+          return (
+          el.contains(efp(rect.left,  rect.top))
+          ||  el.contains(efp(rect.right, rect.top))
+          ||  el.contains(efp(rect.right, rect.bottom))
+          ||  el.contains(efp(rect.left,  rect.bottom))
+          );
+      };
+      const menu_entries = Array.from(document.querySelectorAll("li.toc-entry"));
+      let findMenuEntyById = function(id) {
+        return menu_entries.filter(menu_entry =>
+            menu_entry.getElementsByTagName("a")[0].hash == `#${id}`)
+      }
+      const sections = Array.from(document.querySelectorAll("div.section>div.section"));
+
+      let current_section = sections[0].id;
+      console.log("Adding listener");
+      window.addEventListener('scroll', function (event) {
+          const visible = sections.filter(isInViewport);
+        if (visible.map(x => x.id).slice(-1)[0] != undefined) {
+            current_section = visible.map(x => x.id).slice(-1)[0];
+            menu_entries.forEach(entry => entry.classList.remove("current-section"));
+            const menu_entry = findMenuEntyById(current_section)[0];
+            menu_entry.classList.add("current-section");
+        }
+        console.log(`Current: ${current_section}`);
+        console.log(`Corresponding menu: ${findMenuEntyById(current_section)[0]}`)
+  }, false);
+</script>
+        """,
+        )
+
+        append_buttons(soup)
+        change_footer(soup)
 
         html_file_dest = os.path.join(args.destination, os.path.basename(html_file))
         save_doc(soup, html_file_dest)

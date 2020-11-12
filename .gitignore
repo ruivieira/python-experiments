@@ -138,4 +138,6 @@ dmypy.json
 
 # Fossil
 *.fossil
-jboptim.dist
+
+#Nuitka builds
+*.dist/
