@@ -13,6 +13,8 @@ import json
 import coloredlogs  # type: ignore
 import logging
 
+from typing import List
+
 # Create a logger object.
 logger = logging.getLogger("bear")
 coloredlogs.install(level="DEBUG")
@@ -33,9 +35,9 @@ class BearSync:
         # The following two lists are more or less mutually exclusive, so use only one of them.
         # (You can use both if you have some nested tags where that makes sense)
         # Also, they only work if `make_tag_folders = True`.
-        self.only_export_these_tags = (
-            []
-        )  # Leave this list empty for all notes! See below for sample
+        self.only_export_these_tags: List[
+            str
+        ] = []  # Leave this list empty for all notes! See below for sample
         # only_export_these_tags = ['bear/github', 'writings']
         self.no_export_tags = (
             []
@@ -142,7 +144,7 @@ class BearSync:
             with open(self.log_file, "a", encoding="utf-8") as dest:
                 dest.write(time_stamp + ": " + message + "\n")
 
-    def check_db_modified(self):
+    def check_db_modified(self) -> bool:
         """Check if the DB was modified"""
         if not os.path.exists(self.sync_ts_file):
             return True

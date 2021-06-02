@@ -141,3 +141,5 @@ dmypy.json
 
 #Nuitka builds
 *.dist/
+.idea
+.DS_Store

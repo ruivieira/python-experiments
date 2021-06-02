@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """Generates this README.md"""
 # INFO: generates this README.md
 from dataclasses import dataclass
@@ -18,7 +19,7 @@ class Info:
 PROJECTS: List[Info] = []
 
 for path in Path(".").rglob("*.py"):
-    x = open(path.resolve()).read().splitlines()
+    x = open(path.resolve(), encoding='utf-8').read().splitlines()
     descriptions = list(filter(lambda line: line.startswith("# INFO:"), x))
     if len(descriptions) > 0:
         info = Info(filename=path.name, description=descriptions[0][8:], url=None)
