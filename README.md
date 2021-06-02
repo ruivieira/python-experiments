@@ -5,9 +5,11 @@
 
 A place for Python experiments. Documentation available [here](https://ruivieira.github.io/python-experiments/).
 
+* `secrets.py`, Manage secrets files
 * `jboptim.py`, Optimise Jupyter books
 * `readme.py`, generates this README.md
 * `parrot.py`, Markov chain inspired tweets
+* `libsardine.py`, TiddlyWiki access library
 * `sb.py`, Manage client-side Jupyter notebooks
 * `pyxai.py`, A library for AI/ML explainability
 * `core.py`, Library to fetch pre-prints from arXiv

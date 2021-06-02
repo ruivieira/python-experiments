@@ -19,11 +19,13 @@ class Info:
 PROJECTS: List[Info] = []
 
 for path in Path(".").rglob("*.py"):
-    x = open(path.resolve(), encoding='utf-8').read().splitlines()
-    descriptions = list(filter(lambda line: line.startswith("# INFO:"), x))
-    if len(descriptions) > 0:
-        info = Info(filename=path.name, description=descriptions[0][8:], url=None)
-        PROJECTS.append(info)
+    if not "venv" in str(path):
+        with open(path.resolve(), 'r', encoding='utf-8') as file:
+            x = file.read().splitlines()
+            descriptions = list(filter(lambda line: line.startswith("# INFO:"), x))
+            if len(descriptions) > 0:
+                info = Info(filename=path.name, description=descriptions[0][8:], url=None)
+                PROJECTS.append(info)
 
 # sort the projects by description size
 PROJECTS = sorted(
