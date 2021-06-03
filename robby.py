@@ -2,17 +2,15 @@
 """Robby info manager"""
 # INFO: Robby info manager
 
-from common.secrets import load
 import tasks
+from common.secrets import load
 
 tokens = load("todoist")
 
-print(tokens["token"])
-
 todoist = tasks.Todoist(tokens["token"])
-
-todoist.get_all_active_tasks()
 
 logseq = tasks.LogSeqTasks("/Users/rui/notes/logseq")
 
-print(logseq.tasks)
+tasks = todoist.get_all_active_tasks() + logseq.tasks
+
+print(tasks)

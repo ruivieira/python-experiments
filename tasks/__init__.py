@@ -12,20 +12,6 @@ from todoist import TodoistAPI
 import common.fs as fs
 
 
-class Todoist:
-    """Todoist access manager"""
-
-    def __init__(self, token: str):
-        self.token = token
-        self.api = TodoistAPI(self.token)
-        self.api.sync()
-
-    def get_all_active_tasks(self):
-        """Get all active tasks"""
-        for item in self.api.state["items"]:
-            print(item)
-
-
 class TaskStatus(Enum):
     """Task status enum"""
 
@@ -40,6 +26,24 @@ class Task:
 
     status: TaskStatus
     content: str
+
+
+class Todoist:
+    """Todoist access manager"""
+
+    def __init__(self, token: str):
+        self.token = token
+        self.api = TodoistAPI(self.token)
+        self.api.sync()
+
+    def get_all_active_tasks(self) -> List[Task]:
+        """Get all active tasks"""
+        tasks: List[Task] = []
+        for item in self.api.state["items"]:
+            status = TaskStatus.TODO if item["checked"] == 0 else TaskStatus.DONE
+            task = Task(status=status, content=item["content"])
+            tasks.append(task)
+        return tasks
 
 
 def _parse_LogSeq_task(line: str) -> Task:

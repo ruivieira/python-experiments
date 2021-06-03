@@ -1,9 +1,8 @@
-# type: ignore
 # pylint: skip-file
 """TiddlyWiki access library"""
 # INFO: TiddlyWiki access library
 from dataclasses import dataclass
-from typing import Dict, Any
+from typing import Dict, Any, List
 import os.path
 import html
 
@@ -27,7 +26,7 @@ def parse_html(html: str) -> BeautifulSoup:
 class Tiddler:
     title: str
     fields: Dict[str, Any]
-    contents: list[str]
+    contents: List[str]
 
 
 def element_to_tiddler(element) -> Tiddler:

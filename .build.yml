@@ -7,14 +7,14 @@ sources:
 tasks:
   - setup: |
       cd python-experiments
-      pip install --user poetry --progress-bar off
-      poetry install --no-root
+      pip install -r requirements.txt
+      pip install -r requirements-test.txt
   - lint: |
       cd python-experiments
-      poetry run pylint $(git ls-files '*.py')
+      pylint $(git ls-files '*.py')
   - typing: |
       cd python-experiments
-      poetry run mypy $(git ls-files '*.py')
+      mypy $(git ls-files '*.py')
   - formatting: |
       cd python-experiments
-      poetry run black --check $(git ls-files '*.py')
+      black --check $(git ls-files '*.py')

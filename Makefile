@@ -37,3 +37,5 @@ tests:
 	pylint $(SOURCES)
 	mypy $(SOURCES)
 	black --check $(SOURCES)
+format:
+	black $(SOURCES)
