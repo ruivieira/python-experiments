@@ -1,4 +1,5 @@
 """Bear database handling methods"""
+# pylint: disable=E1101
 import sqlite3
 from pathlib import Path
 from dataclasses import dataclass

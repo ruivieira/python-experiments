@@ -1,3 +1,5 @@
+"""Common filesystem operation"""
+# INFO: Common filesystem operation
 from pathlib import Path
 from typing import Generator
 

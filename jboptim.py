@@ -1,6 +1,6 @@
 """Optimise Jupyter books"""
 # INFO: Optimise Jupyter books
-
+# pylint: disable=E0401,R1732
 from typing import Dict, List, Union
 import glob
 import argparse

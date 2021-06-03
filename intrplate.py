@@ -1,5 +1,6 @@
 """Generate synthetic data using B-spline interpolation"""
 # INFO: Generate synthetic data using B-spline interpolation
+# pylint: disable=E0401
 from typing import List, Union
 import numpy as np  # type: ignore
 import scipy.interpolate as interpolate  # type: ignore

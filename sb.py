@@ -1,6 +1,6 @@
 """Manage client-side Jupyter notebooks"""
 # INFO: Manage client-side Jupyter notebooks
-# pylint: disable=R0903
+# pylint: disable=R0903,I1101
 import argparse
 import glob
 import os

@@ -2,6 +2,8 @@ flask
 tqdm
 coloredlogs
 colorama
+markovify
 Mastodon.py
+tweepy
 pony
 todoist-python

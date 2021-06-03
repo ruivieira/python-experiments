@@ -1,13 +1,18 @@
+# type: ignore
+"""Robby info manager"""
+# INFO: Robby info manager
+
 from common.secrets import load
 import tasks
-import common.notes as notes
 
 tokens = load("todoist")
 
-print(tokens['token'])
+print(tokens["token"])
 
-todoist = tasks.Todoist(tokens['token'])
+todoist = tasks.Todoist(tokens["token"])
 
-todoist.getAllActiveTasks()
+todoist.get_all_active_tasks()
 
 logseq = tasks.LogSeqTasks("/Users/rui/notes/logseq")
+
+print(logseq.tasks)

@@ -1,5 +1,6 @@
 """Markov chain inspired tweets"""
 # INFO: Markov chain inspired tweets
+# pylint: disable=E0401
 import configparser
 from typing import List
 

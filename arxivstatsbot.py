@@ -1,6 +1,6 @@
 """Mastodon bot announcing new arXiv stats pre-prints"""
 # INFO: Mastodon bot announcing new arXiv stats pre-prints
-
+# pylint: disable=E1101
 import sqlite3
 import configparser
 from datetime import date, timedelta

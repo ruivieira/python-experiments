@@ -34,6 +34,6 @@ clean:
 	rm -Rf readme.build
 	rm -Rf arxivstatsbot.build
 tests:
-	poetry run pylint $(SOURCES)
-	poetry run mypy $(SOURCES)
-	poetry run black --check $(SOURCES)
+	pylint $(SOURCES)
+	mypy $(SOURCES)
+	black --check $(SOURCES)
