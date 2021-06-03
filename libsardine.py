@@ -1,3 +1,4 @@
+# type: ignore
 # pylint: skip-file
 """TiddlyWiki access library"""
 # INFO: TiddlyWiki access library
