@@ -18,33 +18,16 @@ jobs:
           python-version: 3.8.5
           architecture: x64
 
-      - name: Install Poetry
-        uses: dschep/install-poetry-action@v1.2
-
-      - name: Configure poetry
-        run: |
-          poetry config virtualenvs.create true
-          poetry config virtualenvs.in-project false
-          poetry config cache-dir ~/.poetry
-          poetry config virtualenvs.path ~/.poetry/venv
-
-      - name: Cache Poetry virtualenv
-        uses: actions/cache@v1
-        id: cache
-        with:
-          path: ~/.virtualenvs
-          key: poetry-${{ hashFiles('**/poetry.lock') }}
-          restore-keys: |
-            poetry-${{ hashFiles('**/poetry.lock') }}
-
       - name: Install Dependencies
-        run: poetry install
+        run: |
+          - pip install - r requirements.txt
+          - pip install - r requirements-test.txt
 
       - name: Lint
-        run: poetry run pylint $(find . -type f -name "*.py")
+        run: pylint $(find . -type f -name "*.py")
 
       - name: Typings
-        run: poetry run mypy $(find . -type f -name "*.py")
+        run: mypy $(find . -type f -name "*.py")
 
       - name: Formatting
-        run: poetry run black --check $(find . -type f -name "*.py")
+        run: black --check $(find . -type f -name "*.py")
